@@ -28,20 +28,38 @@ set.seed(123)
 ## ----help, eval=FALSE----------------------------------------------------
 #  help('rnn')
 
+## ----data----------------------------------------------------------------
+# create sample inputs
+X1 = sample(0:127, 5000, replace=TRUE)
+X2 = sample(0:127, 5000, replace=TRUE)
+
+# create sample output
+Y <- X1 + X2
+
 ## ----example-------------------------------------------------------------
-# using the default of 10,000 iterations
-rnn(binary_dim =  8,
+rnn(Y,
+    X1,
+    X2,
+    binary_dim =  8,
     alpha      =  0.1,
     input_dim  =  2,
     hidden_dim = 10,
-    output_dim =  1  )
+    output_dim =  1)
 
 ## ----example-2-----------------------------------------------------------
-# using the default of 10,000 iterations
-rnn(binary_dim = 8,
+# create sample inputs
+X1 = sample(0:127, 20000, replace=TRUE)
+X2 = sample(0:127, 20000, replace=TRUE)
+
+# create sample output
+Y <- X1 + X2
+
+rnn(Y,
+    X1,
+    X2,
+    binary_dim = 8,
     alpha      = 0.1,
     input_dim  = 2,
     hidden_dim = 3,
-    output_dim = 1,
-    iterations = 20000)
+    output_dim = 1)
 

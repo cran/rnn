@@ -10,7 +10,7 @@
 
 <meta name="author" content="Vignette Author" />
 
-<meta name="date" content="2015-11-30" />
+<meta name="date" content="2015-12-11" />
 
 <title>Recurrent Neural Network</title>
 
@@ -54,7 +54,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="header">
 <h1 class="title">Recurrent Neural Network</h1>
 <h4 class="author"><em>Vignette Author</em></h4>
-<h4 class="date"><em>2015-11-30</em></h4>
+<h4 class="date"><em>2015-12-11</em></h4>
 </div>
 
 
@@ -67,32 +67,32 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <h1>Code</h1>
 <p>We can view the code of the main <code>rnn()</code> function by calling it without the parathesis.</p>
 <pre class="sourceCode r"><code class="sourceCode r">rnn</code></pre>
-<pre><code>## function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000) {
+<pre><code>## function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, silent = FALSE) {
 ##   
 ##   # check what largest possible number is
 ##   largest_number = 2^binary_dim
 ##   
 ##   # initialize neural network weights
-##   synapse_0 = matrix(runif(n = input_dim*hidden_dim, min=-1, max=1), nrow=input_dim)
-##   synapse_1 = matrix(runif(n = hidden_dim*output_dim, min=-1, max=1), nrow=hidden_dim)
-##   synapse_h = matrix(runif(n = hidden_dim*hidden_dim, min=-1, max=1), nrow=hidden_dim)
+##   synapse_0 = matrix(stats::runif(n = input_dim*hidden_dim, min=-1, max=1), nrow=input_dim)
+##   synapse_1 = matrix(stats::runif(n = hidden_dim*output_dim, min=-1, max=1), nrow=hidden_dim)
+##   synapse_h = matrix(stats::runif(n = hidden_dim*hidden_dim, min=-1, max=1), nrow=hidden_dim)
 ##   
 ##   synapse_0_update = matrix(0, nrow = input_dim, ncol = hidden_dim)
 ##   synapse_1_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
 ##   synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
 ##   
 ##   # training logic
-##   for (j in 1:iterations) {
+##   for (j in 1:length(Y)) {
 ##     
 ##     # generate a simple addition problem (a + b = c)
-##     a_int = sample(1:(largest_number/2), 1) # int version
+##     a_int = X1[j] # int version
 ##     a = int2binary(a_int, binary_dim) # binary encoding
 ##     
-##     b_int = sample(1:(largest_number/2), 1) # int version
+##     b_int = X2[j] # int version
 ##     b = int2binary(b_int, binary_dim)
 ##     
 ##     # true answer
-##     c_int = a_int + b_int
+##     c_int = Y[j]
 ##     c = int2binary(c_int, binary_dim)
 ##     
 ##     # where we'll store our best guesss (binary encoded)
@@ -160,15 +160,18 @@ code > span.er { color: #ff0000; font-weight: bold; }
 ##     synapse_h_update = synapse_h_update * 0
 ##     
 ##     # print out progress
-##     if(j %% 500 ==0) {
-##       print(paste(&quot;Error:&quot;, overallError))
-##       print(paste(&quot;Pred:&quot;, paste(d, collapse = &quot; &quot;)))
-##       print(paste(&quot;True:&quot;, paste(c, collapse = &quot; &quot;)))
+##     if(!silent &amp;&amp; j %% 500 ==0) {
+##       print(paste('Iteration:', j))
+##       print(paste('Error:', overallError))
+##       print(paste('X1:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
+##       print(paste('X2:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
+##       print('-----------------------------')
+##       print(paste('Y: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
 ##       out = 0
 ##       for (x in 1:length(d)) {
 ##         out[x] = rev(d)[x]*2^(x-1) }
-##       print(paste(a_int, &quot;+&quot;, b_int, &quot;=&quot;, sum(out)))
-##       print(&quot;----------------&quot;)                     
+##       print(paste('Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
+##       print('=============================')
 ##     }             
 ##   }
 ## }
@@ -180,7 +183,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>The code for this function is:</p>
 <pre class="sourceCode r"><code class="sourceCode r">int2binary</code></pre>
 <pre><code>## function(x, length) {
-##   tail(rev(as.integer(intToBits(x))), length) }
+##   utils::tail(rev(as.integer(intToBits(x))), length) }
 ## &lt;environment: namespace:rnn&gt;</code></pre>
 <p>The second function is <code>sigmoid()</code>, which converts an integer to its sigmoid value.</p>
 <pre class="sourceCode r"><code class="sourceCode r">(a &lt;-<span class="st"> </span><span class="kw">sigmoid</span>(<span class="dv">3</span>))</code></pre>
@@ -206,271 +209,438 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)</code></pre>
 <p>An example is included in the help file.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">help</span>(<span class="st">'rnn'</span>)</code></pre>
+<p>First we generate the data:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create sample inputs</span>
+X1 =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">127</span>, <span class="dv">5000</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)
+X2 =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">127</span>, <span class="dv">5000</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)
+
+<span class="co"># create sample output</span>
+Y &lt;-<span class="st"> </span>X1 +<span class="st"> </span>X2</code></pre>
 <p>This example is:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># using the default of 10,000 iterations</span>
-<span class="kw">rnn</span>(<span class="dt">binary_dim =</span>  <span class="dv">8</span>,
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rnn</span>(Y,
+    X1,
+    X2,
+    <span class="dt">binary_dim =</span>  <span class="dv">8</span>,
     <span class="dt">alpha      =</span>  <span class="fl">0.1</span>,
     <span class="dt">input_dim  =</span>  <span class="dv">2</span>,
     <span class="dt">hidden_dim =</span> <span class="dv">10</span>,
-    <span class="dt">output_dim =</span>  <span class="dv">1</span>  )</code></pre>
-<pre><code>## [1] &quot;Error: 4.010345563468&quot;
-## [1] &quot;Pred: 0 0 0 0 0 0 0 0&quot;
-## [1] &quot;True: 0 1 0 1 1 0 0 1&quot;
-## [1] &quot;16 + 73 = 0&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.02920967352848&quot;
-## [1] &quot;Pred: 1 1 1 1 1 1 1 1&quot;
-## [1] &quot;True: 1 0 1 1 0 0 0 0&quot;
-## [1] &quot;56 + 120 = 255&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.12557055200652&quot;
-## [1] &quot;Pred: 0 0 0 0 0 0 0 0&quot;
-## [1] &quot;True: 1 0 1 0 0 0 1 1&quot;
-## [1] &quot;39 + 124 = 0&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.06576951236069&quot;
-## [1] &quot;Pred: 1 0 1 1 1 1 1 0&quot;
-## [1] &quot;True: 0 1 0 1 0 0 0 0&quot;
-## [1] &quot;74 + 6 = 190&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.05885825857722&quot;
-## [1] &quot;Pred: 0 0 0 0 0 0 0 0&quot;
-## [1] &quot;True: 1 0 1 1 0 1 1 0&quot;
-## [1] &quot;76 + 106 = 0&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.07237068740385&quot;
-## [1] &quot;Pred: 0 1 1 1 0 0 0 0&quot;
-## [1] &quot;True: 1 0 1 1 1 0 1 1&quot;
-## [1] &quot;127 + 60 = 112&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.70719891391563&quot;
-## [1] &quot;Pred: 0 0 0 0 0 1 1 1&quot;
-## [1] &quot;True: 0 1 0 1 0 1 1 1&quot;
-## [1] &quot;71 + 16 = 7&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.54035352343777&quot;
-## [1] &quot;Pred: 1 0 0 1 1 1 1 0&quot;
-## [1] &quot;True: 1 0 0 1 0 1 1 0&quot;
-## [1] &quot;79 + 71 = 158&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.87571289227445&quot;
-## [1] &quot;Pred: 0 0 0 1 1 0 1 0&quot;
-## [1] &quot;True: 0 1 1 0 0 0 1 0&quot;
-## [1] &quot;77 + 21 = 26&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.09484833222603&quot;
-## [1] &quot;Pred: 1 0 1 1 1 1 1 1&quot;
-## [1] &quot;True: 1 0 1 1 1 1 1 1&quot;
-## [1] &quot;125 + 66 = 191&quot;
-## [1] &quot;----------------&quot;</code></pre>
-<p>It is interesting to vary the number of hidden units.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># using the default of 10,000 iterations</span>
-<span class="kw">rnn</span>(<span class="dt">binary_dim =</span> <span class="dv">8</span>,
+    <span class="dt">output_dim =</span>  <span class="dv">1</span>)</code></pre>
+<pre><code>## [1] &quot;Iteration: 500&quot;
+## [1] &quot;Error: 3.94449836190173&quot;
+## [1] &quot;X1: 0 1 1 0 0 1 0 0   ( 100 )&quot;
+## [1] &quot;X2: 0 1 0 0 1 0 1 0 + ( 74 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 1 1 0   ( 174 )&quot;
+## [1] &quot;Y^: 1 0 1 1 0 1 0 0   ( 180 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 1000&quot;
+## [1] &quot;Error: 3.79861131785405&quot;
+## [1] &quot;X1: 0 0 0 0 1 1 0 1   ( 13 )&quot;
+## [1] &quot;X2: 0 1 1 1 0 0 1 1 + ( 115 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 0 0 0 0 0   ( 128 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 1500&quot;
+## [1] &quot;Error: 3.84284094669253&quot;
+## [1] &quot;X1: 0 0 1 1 1 0 0 0   ( 56 )&quot;
+## [1] &quot;X2: 0 0 0 0 0 0 1 0 + ( 2 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 1 1 0 1 0   ( 58 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 1 1 1   ( 255 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 2000&quot;
+## [1] &quot;Error: 4.35601700739721&quot;
+## [1] &quot;X1: 0 0 1 1 1 0 0 1   ( 57 )&quot;
+## [1] &quot;X2: 0 1 0 1 0 1 1 1 + ( 87 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 1 0 0 0 0   ( 144 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 1 1 1   ( 255 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 2500&quot;
+## [1] &quot;Error: 3.60470935009456&quot;
+## [1] &quot;X1: 0 0 0 1 0 0 1 0   ( 18 )&quot;
+## [1] &quot;X2: 0 1 1 1 0 0 1 0 + ( 114 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 0 0 1 0 0   ( 132 )&quot;
+## [1] &quot;Y^: 0 0 1 0 0 1 0 0   ( 36 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 3000&quot;
+## [1] &quot;Error: 4.23322205952535&quot;
+## [1] &quot;X1: 0 1 0 1 0 1 1 1   ( 87 )&quot;
+## [1] &quot;X2: 0 0 1 0 1 1 1 1 + ( 47 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 0 0 1 1 0   ( 134 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 1 1 0   ( 254 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 3500&quot;
+## [1] &quot;Error: 3.91551740500765&quot;
+## [1] &quot;X1: 0 0 0 0 1 0 0 0   ( 8 )&quot;
+## [1] &quot;X2: 0 1 0 1 1 1 1 0 + ( 94 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 0 0 1 1 0   ( 102 )&quot;
+## [1] &quot;Y^: 0 0 0 1 0 1 0 0   ( 20 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 4000&quot;
+## [1] &quot;Error: 3.94852213025003&quot;
+## [1] &quot;X1: 0 0 1 1 0 1 1 0   ( 54 )&quot;
+## [1] &quot;X2: 0 1 1 0 0 1 0 0 + ( 100 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 1 1 0 1 0   ( 154 )&quot;
+## [1] &quot;Y^: 0 1 0 0 1 0 0 0   ( 72 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 4500&quot;
+## [1] &quot;Error: 3.83796814080785&quot;
+## [1] &quot;X1: 0 0 1 1 0 1 0 0   ( 52 )&quot;
+## [1] &quot;X2: 0 1 1 1 1 0 1 0 + ( 122 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 1 1 0   ( 174 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 5000&quot;
+## [1] &quot;Error: 2.88197887989984&quot;
+## [1] &quot;X1: 0 0 0 0 0 0 0 1   ( 1 )&quot;
+## [1] &quot;X2: 0 1 1 1 0 0 1 1 + ( 115 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 0 1 0 0   ( 116 )&quot;
+## [1] &quot;Y^: 0 1 1 1 0 1 1 0   ( 118 )&quot;
+## [1] &quot;=============================&quot;</code></pre>
+<p>It is interesting to vary the number of hidden units and iterations.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create sample inputs</span>
+X1 =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">127</span>, <span class="dv">20000</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)
+X2 =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span>:<span class="dv">127</span>, <span class="dv">20000</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)
+
+<span class="co"># create sample output</span>
+Y &lt;-<span class="st"> </span>X1 +<span class="st"> </span>X2
+
+<span class="kw">rnn</span>(Y,
+    X1,
+    X2,
+    <span class="dt">binary_dim =</span> <span class="dv">8</span>,
     <span class="dt">alpha      =</span> <span class="fl">0.1</span>,
     <span class="dt">input_dim  =</span> <span class="dv">2</span>,
     <span class="dt">hidden_dim =</span> <span class="dv">3</span>,
-    <span class="dt">output_dim =</span> <span class="dv">1</span>,
-    <span class="dt">iterations =</span> <span class="dv">20000</span>)</code></pre>
-<pre><code>## [1] &quot;Error: 3.92094537253012&quot;
-## [1] &quot;Pred: 0 1 0 1 0 0 0 0&quot;
-## [1] &quot;True: 0 1 0 1 1 0 0 0&quot;
-## [1] &quot;87 + 1 = 80&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.04666554905518&quot;
-## [1] &quot;Pred: 1 1 1 1 1 0 1 1&quot;
-## [1] &quot;True: 1 0 1 0 0 1 1 0&quot;
-## [1] &quot;114 + 52 = 251&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.958835551849&quot;
-## [1] &quot;Pred: 0 0 0 0 0 0 1 0&quot;
-## [1] &quot;True: 0 0 1 1 0 0 0 0&quot;
-## [1] &quot;3 + 45 = 2&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.01120927634392&quot;
-## [1] &quot;Pred: 1 1 1 1 1 0 1 1&quot;
-## [1] &quot;True: 0 0 0 0 1 1 0 1&quot;
-## [1] &quot;8 + 5 = 251&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.05754646026104&quot;
-## [1] &quot;Pred: 1 1 0 0 1 0 1 0&quot;
-## [1] &quot;True: 1 0 1 0 0 1 0 1&quot;
-## [1] &quot;64 + 101 = 202&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.00467259262997&quot;
-## [1] &quot;Pred: 0 1 1 1 0 1 0 0&quot;
-## [1] &quot;True: 1 1 0 0 1 0 1 0&quot;
-## [1] &quot;96 + 106 = 116&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.97262278830339&quot;
-## [1] &quot;Pred: 0 1 1 1 0 0 1 0&quot;
-## [1] &quot;True: 0 1 0 1 1 0 1 0&quot;
-## [1] &quot;66 + 24 = 114&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.87812958107059&quot;
-## [1] &quot;Pred: 1 1 0 1 1 0 0 0&quot;
-## [1] &quot;True: 0 1 1 0 1 0 0 0&quot;
-## [1] &quot;16 + 88 = 216&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.76827039076875&quot;
-## [1] &quot;Pred: 0 1 1 1 1 1 0 1&quot;
-## [1] &quot;True: 0 1 0 1 1 0 0 1&quot;
-## [1] &quot;29 + 60 = 125&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.69864880242451&quot;
-## [1] &quot;Pred: 1 1 1 1 1 0 1 1&quot;
-## [1] &quot;True: 0 1 1 1 1 0 1 0&quot;
-## [1] &quot;41 + 81 = 251&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.72417373919211&quot;
-## [1] &quot;Pred: 0 0 1 1 1 1 1 1&quot;
-## [1] &quot;True: 0 0 1 0 0 0 0 1&quot;
-## [1] &quot;4 + 29 = 63&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.45828716714469&quot;
-## [1] &quot;Pred: 0 0 0 1 0 1 0 0&quot;
-## [1] &quot;True: 0 0 1 0 1 0 0 0&quot;
-## [1] &quot;26 + 14 = 20&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.01122874067438&quot;
-## [1] &quot;Pred: 0 1 1 1 1 1 1 0&quot;
-## [1] &quot;True: 0 1 0 0 0 0 0 0&quot;
-## [1] &quot;27 + 37 = 126&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.22607020244502&quot;
-## [1] &quot;Pred: 1 0 1 0 1 1 1 0&quot;
-## [1] &quot;True: 1 0 1 0 1 1 1 0&quot;
-## [1] &quot;76 + 98 = 174&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.84316603595037&quot;
-## [1] &quot;Pred: 0 1 1 1 0 0 1 0&quot;
-## [1] &quot;True: 0 1 1 1 1 1 0 0&quot;
-## [1] &quot;47 + 77 = 114&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.16821433128999&quot;
-## [1] &quot;Pred: 1 0 1 1 1 0 1 1&quot;
-## [1] &quot;True: 1 1 0 0 0 0 0 1&quot;
-## [1] &quot;109 + 84 = 187&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.33225702334997&quot;
-## [1] &quot;Pred: 1 0 0 1 1 0 1 1&quot;
-## [1] &quot;True: 1 0 0 1 1 0 0 1&quot;
-## [1] &quot;25 + 128 = 155&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.27988603657025&quot;
-## [1] &quot;Pred: 0 1 0 0 1 1 1 1&quot;
-## [1] &quot;True: 0 1 0 0 1 0 1 1&quot;
-## [1] &quot;11 + 64 = 79&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.00513563960477&quot;
-## [1] &quot;Pred: 0 0 1 0 1 0 0 0&quot;
-## [1] &quot;True: 0 0 1 1 0 0 0 1&quot;
-## [1] &quot;26 + 23 = 40&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.34716635145008&quot;
-## [1] &quot;Pred: 0 1 1 1 0 0 0 0&quot;
-## [1] &quot;True: 0 1 1 0 0 1 0 1&quot;
-## [1] &quot;7 + 94 = 112&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.2360257563136&quot;
-## [1] &quot;Pred: 0 1 0 0 1 1 1 0&quot;
-## [1] &quot;True: 1 0 0 0 1 1 0 1&quot;
-## [1] &quot;72 + 69 = 78&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.03463950916919&quot;
-## [1] &quot;Pred: 1 1 1 1 0 1 1 1&quot;
-## [1] &quot;True: 1 0 0 1 0 1 0 1&quot;
-## [1] &quot;48 + 101 = 247&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 1.95257318377524&quot;
-## [1] &quot;Pred: 1 0 1 1 0 1 1 0&quot;
-## [1] &quot;True: 1 0 1 1 0 1 1 0&quot;
-## [1] &quot;96 + 86 = 182&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 4.11697073433738&quot;
-## [1] &quot;Pred: 1 0 0 0 0 0 0 0&quot;
-## [1] &quot;True: 1 1 1 0 0 1 0 1&quot;
-## [1] &quot;126 + 103 = 128&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.19006366358445&quot;
-## [1] &quot;Pred: 0 1 1 0 1 0 0 0&quot;
-## [1] &quot;True: 0 1 1 0 1 0 0 0&quot;
-## [1] &quot;103 + 1 = 104&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.99267071257363&quot;
-## [1] &quot;Pred: 1 0 0 1 1 1 1 0&quot;
-## [1] &quot;True: 1 0 0 0 1 1 1 0&quot;
-## [1] &quot;46 + 96 = 158&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.6491616956578&quot;
-## [1] &quot;Pred: 1 0 0 1 0 0 0 1&quot;
-## [1] &quot;True: 1 0 0 1 1 1 0 1&quot;
-## [1] &quot;111 + 46 = 145&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.16124301610558&quot;
-## [1] &quot;Pred: 0 1 0 0 0 0 0 1&quot;
-## [1] &quot;True: 0 1 0 0 1 0 0 1&quot;
-## [1] &quot;42 + 31 = 65&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 1.86639289236952&quot;
-## [1] &quot;Pred: 0 0 1 1 1 1 1 1&quot;
-## [1] &quot;True: 0 0 1 1 1 1 1 1&quot;
-## [1] &quot;30 + 33 = 63&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.90259175859386&quot;
-## [1] &quot;Pred: 1 0 0 0 0 1 0 0&quot;
-## [1] &quot;True: 1 1 1 1 0 1 0 0&quot;
-## [1] &quot;123 + 121 = 132&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.58913084378957&quot;
-## [1] &quot;Pred: 1 0 0 1 1 0 0 1&quot;
-## [1] &quot;True: 1 0 0 1 1 0 0 1&quot;
-## [1] &quot;103 + 50 = 153&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.11819733269934&quot;
-## [1] &quot;Pred: 1 0 1 0 1 0 0 0&quot;
-## [1] &quot;True: 1 0 1 0 0 0 0 0&quot;
-## [1] &quot;87 + 73 = 168&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 1.21937745325075&quot;
-## [1] &quot;Pred: 0 1 0 1 1 0 0 1&quot;
-## [1] &quot;True: 0 1 0 1 1 0 0 1&quot;
-## [1] &quot;64 + 25 = 89&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.92137735633988&quot;
-## [1] &quot;Pred: 1 0 0 0 0 0 0 1&quot;
-## [1] &quot;True: 1 0 1 1 1 0 0 1&quot;
-## [1] &quot;60 + 125 = 129&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 3.03678943553476&quot;
-## [1] &quot;Pred: 1 0 0 1 1 1 1 1&quot;
-## [1] &quot;True: 1 0 0 1 0 1 1 1&quot;
-## [1] &quot;113 + 38 = 159&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.52485337857573&quot;
-## [1] &quot;Pred: 1 0 0 1 1 1 1 1&quot;
-## [1] &quot;True: 1 0 0 1 0 1 1 1&quot;
-## [1] &quot;86 + 65 = 159&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 0.686101476120311&quot;
-## [1] &quot;Pred: 0 1 0 1 0 0 0 1&quot;
-## [1] &quot;True: 0 1 0 1 0 0 0 1&quot;
-## [1] &quot;17 + 64 = 81&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.17545526595644&quot;
-## [1] &quot;Pred: 1 1 1 1 1 1 1 0&quot;
-## [1] &quot;True: 0 1 1 1 1 1 1 0&quot;
-## [1] &quot;38 + 88 = 254&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 2.54896625392598&quot;
-## [1] &quot;Pred: 1 0 0 0 1 0 0 1&quot;
-## [1] &quot;True: 1 0 0 0 1 0 0 1&quot;
-## [1] &quot;114 + 23 = 137&quot;
-## [1] &quot;----------------&quot;
-## [1] &quot;Error: 1.87376443422062&quot;
-## [1] &quot;Pred: 1 0 0 1 0 1 1 0&quot;
-## [1] &quot;True: 1 1 0 1 0 1 1 0&quot;
-## [1] &quot;118 + 96 = 150&quot;
-## [1] &quot;----------------&quot;</code></pre>
+    <span class="dt">output_dim =</span> <span class="dv">1</span>)</code></pre>
+<pre><code>## [1] &quot;Iteration: 500&quot;
+## [1] &quot;Error: 4.05003768856707&quot;
+## [1] &quot;X1: 0 1 1 1 1 1 0 0   ( 124 )&quot;
+## [1] &quot;X2: 0 1 1 1 1 1 1 0 + ( 126 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 1 1 1 1 0 1 0   ( 250 )&quot;
+## [1] &quot;Y^: 1 0 0 0 0 0 0 1   ( 129 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 1000&quot;
+## [1] &quot;Error: 4.00581060883197&quot;
+## [1] &quot;X1: 0 0 0 1 0 0 1 1   ( 19 )&quot;
+## [1] &quot;X2: 0 0 1 1 1 1 1 0 + ( 62 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 1 0 0 0 1   ( 81 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 1 1 1   ( 255 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 1500&quot;
+## [1] &quot;Error: 3.99519377955615&quot;
+## [1] &quot;X1: 0 1 1 1 1 0 1 1   ( 123 )&quot;
+## [1] &quot;X2: 0 1 0 0 1 1 1 0 + ( 78 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 1 0 0 1 0 0 1   ( 201 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 2000&quot;
+## [1] &quot;Error: 4.05519613296592&quot;
+## [1] &quot;X1: 0 0 1 1 1 0 1 0   ( 58 )&quot;
+## [1] &quot;X2: 0 0 1 1 1 1 1 1 + ( 63 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 1 0 0 1   ( 121 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 2500&quot;
+## [1] &quot;Error: 3.91489043806127&quot;
+## [1] &quot;X1: 0 0 1 1 0 1 0 1   ( 53 )&quot;
+## [1] &quot;X2: 0 0 1 0 0 0 1 1 + ( 35 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 1 1 0 0 0   ( 88 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 3000&quot;
+## [1] &quot;Error: 4.00309087882978&quot;
+## [1] &quot;X1: 0 1 1 0 1 0 1 1   ( 107 )&quot;
+## [1] &quot;X2: 0 1 0 0 0 1 0 0 + ( 68 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 1 1 1   ( 175 )&quot;
+## [1] &quot;Y^: 0 0 0 0 1 0 0 0   ( 8 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 3500&quot;
+## [1] &quot;Error: 4.03456518452721&quot;
+## [1] &quot;X1: 0 1 1 0 0 0 0 1   ( 97 )&quot;
+## [1] &quot;X2: 0 0 0 1 0 0 1 0 + ( 18 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 0 0 1 1   ( 115 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 4000&quot;
+## [1] &quot;Error: 3.9979157964333&quot;
+## [1] &quot;X1: 0 0 0 1 0 1 1 1   ( 23 )&quot;
+## [1] &quot;X2: 0 1 0 0 1 0 1 0 + ( 74 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 0 0 0 0 1   ( 97 )&quot;
+## [1] &quot;Y^: 1 0 0 1 0 1 0 0   ( 148 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 4500&quot;
+## [1] &quot;Error: 3.9764908147916&quot;
+## [1] &quot;X1: 0 1 0 1 0 0 1 0   ( 82 )&quot;
+## [1] &quot;X2: 0 0 0 1 1 1 1 1 + ( 31 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 0 0 0 1   ( 113 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 1 1 1   ( 255 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 5000&quot;
+## [1] &quot;Error: 4.02559985626535&quot;
+## [1] &quot;X1: 0 0 0 1 0 0 0 0   ( 16 )&quot;
+## [1] &quot;X2: 0 0 1 0 0 0 1 1 + ( 35 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 1 0 0 1 1   ( 51 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 5500&quot;
+## [1] &quot;Error: 4.01779534811687&quot;
+## [1] &quot;X1: 0 0 1 1 1 0 0 0   ( 56 )&quot;
+## [1] &quot;X2: 0 0 0 0 0 0 1 0 + ( 2 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 1 1 0 1 0   ( 58 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 1 0 0   ( 4 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 6000&quot;
+## [1] &quot;Error: 3.98188869279542&quot;
+## [1] &quot;X1: 0 0 0 1 1 0 1 1   ( 27 )&quot;
+## [1] &quot;X2: 0 0 0 0 1 1 1 0 + ( 14 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 0 1 0 0 1   ( 41 )&quot;
+## [1] &quot;Y^: 0 0 0 0 1 0 0 0   ( 8 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 6500&quot;
+## [1] &quot;Error: 4.02683730670772&quot;
+## [1] &quot;X1: 0 1 0 1 1 0 1 0   ( 90 )&quot;
+## [1] &quot;X2: 0 1 0 0 1 1 0 1 + ( 77 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 0 1 1 1   ( 167 )&quot;
+## [1] &quot;Y^: 1 0 0 1 1 0 1 0   ( 154 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 7000&quot;
+## [1] &quot;Error: 3.97125001336543&quot;
+## [1] &quot;X1: 0 0 0 1 0 0 1 0   ( 18 )&quot;
+## [1] &quot;X2: 0 0 1 1 0 1 0 0 + ( 52 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 0 0 1 1 0   ( 70 )&quot;
+## [1] &quot;Y^: 0 0 0 0 1 0 0 0   ( 8 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 7500&quot;
+## [1] &quot;Error: 4.00404074101843&quot;
+## [1] &quot;X1: 0 0 1 1 1 0 0 0   ( 56 )&quot;
+## [1] &quot;X2: 0 1 1 1 0 0 1 0 + ( 114 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 0 1 0   ( 170 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 1 1 1   ( 255 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 8000&quot;
+## [1] &quot;Error: 3.95976138728772&quot;
+## [1] &quot;X1: 0 1 0 0 1 1 1 1   ( 79 )&quot;
+## [1] &quot;X2: 0 1 0 0 1 0 1 1 + ( 75 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 1 1 0 1 0   ( 154 )&quot;
+## [1] &quot;Y^: 1 0 0 1 0 1 1 0   ( 150 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 8500&quot;
+## [1] &quot;Error: 3.89468295812157&quot;
+## [1] &quot;X1: 0 0 0 0 1 0 1 1   ( 11 )&quot;
+## [1] &quot;X2: 0 0 1 1 0 0 0 0 + ( 48 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 1 1 0 1 1   ( 59 )&quot;
+## [1] &quot;Y^: 0 1 1 1 1 0 1 1   ( 123 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 9000&quot;
+## [1] &quot;Error: 3.9000311712921&quot;
+## [1] &quot;X1: 0 1 0 1 1 0 0 1   ( 89 )&quot;
+## [1] &quot;X2: 0 0 0 0 0 1 1 0 + ( 6 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 1 1 1 1 1   ( 95 )&quot;
+## [1] &quot;Y^: 0 0 0 0 1 1 0 1   ( 13 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 9500&quot;
+## [1] &quot;Error: 3.94842400076739&quot;
+## [1] &quot;X1: 0 1 0 0 1 0 0 0   ( 72 )&quot;
+## [1] &quot;X2: 0 0 0 1 0 0 1 0 + ( 18 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 1 1 0 1 0   ( 90 )&quot;
+## [1] &quot;Y^: 0 0 0 0 0 0 0 0   ( 0 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 10000&quot;
+## [1] &quot;Error: 3.77216128486592&quot;
+## [1] &quot;X1: 0 0 0 1 1 1 1 1   ( 31 )&quot;
+## [1] &quot;X2: 0 0 0 1 0 1 1 0 + ( 22 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 1 0 1 0 1   ( 53 )&quot;
+## [1] &quot;Y^: 0 0 0 0 1 1 1 1   ( 15 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 10500&quot;
+## [1] &quot;Error: 3.60145199253427&quot;
+## [1] &quot;X1: 0 1 0 1 0 0 0 0   ( 80 )&quot;
+## [1] &quot;X2: 0 1 0 0 1 1 1 0 + ( 78 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 1 1 1 1 0   ( 158 )&quot;
+## [1] &quot;Y^: 1 0 0 1 1 1 0 0   ( 156 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 11000&quot;
+## [1] &quot;Error: 3.53622411158228&quot;
+## [1] &quot;X1: 0 0 0 1 1 0 0 0   ( 24 )&quot;
+## [1] &quot;X2: 0 1 1 1 0 1 0 0 + ( 116 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 0 1 1 0 0   ( 140 )&quot;
+## [1] &quot;Y^: 1 1 1 0 1 0 0 0   ( 232 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 11500&quot;
+## [1] &quot;Error: 3.91947382648576&quot;
+## [1] &quot;X1: 0 0 0 1 1 1 0 0   ( 28 )&quot;
+## [1] &quot;X2: 0 1 0 0 0 0 0 1 + ( 65 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 1 1 1 0 1   ( 93 )&quot;
+## [1] &quot;Y^: 1 0 0 1 1 1 1 0   ( 158 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 12000&quot;
+## [1] &quot;Error: 3.63749232770687&quot;
+## [1] &quot;X1: 0 0 0 0 1 1 0 1   ( 13 )&quot;
+## [1] &quot;X2: 0 0 1 1 1 0 0 1 + ( 57 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 0 0 1 1 0   ( 70 )&quot;
+## [1] &quot;Y^: 0 0 1 1 0 1 1 0   ( 54 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 12500&quot;
+## [1] &quot;Error: 3.67750496280662&quot;
+## [1] &quot;X1: 0 0 1 1 0 1 0 0   ( 52 )&quot;
+## [1] &quot;X2: 0 1 0 0 0 1 0 1 + ( 69 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 1 0 0 1   ( 121 )&quot;
+## [1] &quot;Y^: 1 1 1 1 1 0 1 1   ( 251 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 13000&quot;
+## [1] &quot;Error: 3.53987923342722&quot;
+## [1] &quot;X1: 0 1 0 1 0 1 0 0   ( 84 )&quot;
+## [1] &quot;X2: 0 1 0 0 0 0 0 1 + ( 65 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 1 0 1 0 1   ( 149 )&quot;
+## [1] &quot;Y^: 1 0 0 1 0 1 1 1   ( 151 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 13500&quot;
+## [1] &quot;Error: 3.18696622262771&quot;
+## [1] &quot;X1: 0 0 1 0 0 0 1 0   ( 34 )&quot;
+## [1] &quot;X2: 0 1 1 1 0 0 0 1 + ( 113 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 1 0 0 1 1   ( 147 )&quot;
+## [1] &quot;Y^: 1 1 0 1 0 1 1 1   ( 215 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 14000&quot;
+## [1] &quot;Error: 3.06002694096972&quot;
+## [1] &quot;X1: 0 1 0 1 0 1 1 0   ( 86 )&quot;
+## [1] &quot;X2: 0 1 0 1 0 1 1 0 + ( 86 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 1 0 0   ( 172 )&quot;
+## [1] &quot;Y^: 1 0 1 0 1 0 0 0   ( 168 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 14500&quot;
+## [1] &quot;Error: 3.0721497221066&quot;
+## [1] &quot;X1: 0 0 1 0 1 0 0 1   ( 41 )&quot;
+## [1] &quot;X2: 0 0 0 1 1 1 0 1 + ( 29 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 0 0 0 1 1 0   ( 70 )&quot;
+## [1] &quot;Y^: 0 1 1 1 0 1 1 0   ( 118 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 15000&quot;
+## [1] &quot;Error: 3.59314580597317&quot;
+## [1] &quot;X1: 0 1 0 0 1 0 1 1   ( 75 )&quot;
+## [1] &quot;X2: 0 1 0 1 1 1 1 1 + ( 95 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 0 1 0   ( 170 )&quot;
+## [1] &quot;Y^: 1 0 1 0 0 0 0 0   ( 160 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 15500&quot;
+## [1] &quot;Error: 3.50807592457865&quot;
+## [1] &quot;X1: 0 1 1 0 1 1 0 1   ( 109 )&quot;
+## [1] &quot;X2: 0 1 1 0 1 1 1 0 + ( 110 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 1 0 1 1 0 1 1   ( 219 )&quot;
+## [1] &quot;Y^: 1 0 0 1 0 0 1 1   ( 147 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 16000&quot;
+## [1] &quot;Error: 3.52772271488862&quot;
+## [1] &quot;X1: 0 0 0 1 0 0 1 1   ( 19 )&quot;
+## [1] &quot;X2: 0 1 1 1 1 1 0 0 + ( 124 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 0 1 1 1 1   ( 143 )&quot;
+## [1] &quot;Y^: 1 1 0 0 1 1 1 1   ( 207 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 16500&quot;
+## [1] &quot;Error: 3.01368792446641&quot;
+## [1] &quot;X1: 0 0 1 1 1 0 1 0   ( 58 )&quot;
+## [1] &quot;X2: 0 0 1 0 1 0 1 1 + ( 43 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 0 0 1 0 1   ( 101 )&quot;
+## [1] &quot;Y^: 0 1 0 1 0 1 0 1   ( 85 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 17000&quot;
+## [1] &quot;Error: 1.01627141527645&quot;
+## [1] &quot;X1: 0 1 0 1 0 0 0 0   ( 80 )&quot;
+## [1] &quot;X2: 0 0 1 0 0 1 0 0 + ( 36 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 0 1 0 0   ( 116 )&quot;
+## [1] &quot;Y^: 0 1 1 1 0 1 0 0   ( 116 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 17500&quot;
+## [1] &quot;Error: 2.17915966115816&quot;
+## [1] &quot;X1: 0 0 0 1 1 0 1 0   ( 26 )&quot;
+## [1] &quot;X2: 0 0 0 0 0 0 1 1 + ( 3 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 0 1 1 1 0 1   ( 29 )&quot;
+## [1] &quot;Y^: 0 0 0 1 1 1 0 0   ( 28 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 18000&quot;
+## [1] &quot;Error: 3.12585151531538&quot;
+## [1] &quot;X1: 0 1 0 1 0 1 1 1   ( 87 )&quot;
+## [1] &quot;X2: 0 1 0 1 1 0 0 0 + ( 88 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 1 0 1 1 1 1   ( 175 )&quot;
+## [1] &quot;Y^: 1 0 1 0 1 1 1 0   ( 174 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 18500&quot;
+## [1] &quot;Error: 2.29357945379783&quot;
+## [1] &quot;X1: 0 0 0 0 1 1 1 1   ( 15 )&quot;
+## [1] &quot;X2: 0 0 1 0 0 1 0 0 + ( 36 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 0 1 1 0 0 1 1   ( 51 )&quot;
+## [1] &quot;Y^: 0 0 1 1 0 0 1 1   ( 51 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 19000&quot;
+## [1] &quot;Error: 3.76283074446683&quot;
+## [1] &quot;X1: 0 1 1 1 0 1 1 1   ( 119 )&quot;
+## [1] &quot;X2: 0 0 0 1 0 0 0 0 + ( 16 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  1 0 0 0 0 1 1 1   ( 135 )&quot;
+## [1] &quot;Y^: 1 1 0 0 1 1 1 1   ( 207 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 19500&quot;
+## [1] &quot;Error: 2.88900711490157&quot;
+## [1] &quot;X1: 0 1 0 0 1 1 1 1   ( 79 )&quot;
+## [1] &quot;X2: 0 0 0 1 1 0 1 0 + ( 26 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 0 1 0 0 1   ( 105 )&quot;
+## [1] &quot;Y^: 0 1 1 0 0 0 0 1   ( 97 )&quot;
+## [1] &quot;=============================&quot;
+## [1] &quot;Iteration: 20000&quot;
+## [1] &quot;Error: 2.73563618581195&quot;
+## [1] &quot;X1: 0 1 0 1 1 1 0 0   ( 92 )&quot;
+## [1] &quot;X2: 0 0 0 1 1 1 1 0 + ( 30 )&quot;
+## [1] &quot;-----------------------------&quot;
+## [1] &quot;Y:  0 1 1 1 1 0 1 0   ( 122 )&quot;
+## [1] &quot;Y^: 0 1 1 0 0 0 1 0   ( 98 )&quot;
+## [1] &quot;=============================&quot;</code></pre>
 </div>
 
 

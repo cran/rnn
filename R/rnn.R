@@ -3,22 +3,35 @@
 #' @importFrom stats runif
 #' @title Recurrent Neural Network
 #' @description Trains a Recurrent Neural Network.
+#' @param Y vector of output values
+#' @param X1 vector of input values
+#' @param X2 vector of input values
 #' @param binary_dim dimension of binary representation
 #' @param alpha size of alpha
 #' @param input_dim dimension of input layer, i.e. how many numbers to sum
 #' @param hidden_dim dimension of hidden layer
 #' @param output_dim dimension of output layer
-#' @param iterations number of training iterations, default is 10,000
+#' @param silent should train progress be printed
 #' @examples 
-#' # using the default of 10,000 iterations
-#' rnn(binary_dim =  8,
+#' # create training inputs
+#' X1 = sample(0:127, 7000, replace=TRUE)
+#' X2 = sample(0:127, 7000, replace=TRUE)
+#' 
+#' # create training output
+#' Y <- X1 + X2
+#' 
+#' # run the 
+#' rnn(Y,
+#'     X1,
+#'     X2,
+#'     binary_dim =  8,
 #'     alpha      =  0.1,
 #'     input_dim  =  2,
 #'     hidden_dim = 10,
-#'     output_dim =  1  )
+#'     output_dim =  1)
 
 
-rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations=5000) {
+rnn <- function(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim, silent = FALSE) {
   
   # check what largest possible number is
   largest_number = 2^binary_dim
@@ -33,17 +46,17 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
   synapse_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
   
   # training logic
-  for (j in 1:iterations) {
+  for (j in 1:length(Y)) {
     
     # generate a simple addition problem (a + b = c)
-    a_int = sample(1:(largest_number/2), 1) # int version
+    a_int = X1[j] # int version
     a = int2binary(a_int, binary_dim) # binary encoding
     
-    b_int = sample(1:(largest_number/2), 1) # int version
+    b_int = X2[j] # int version
     b = int2binary(b_int, binary_dim)
     
     # true answer
-    c_int = a_int + b_int
+    c_int = Y[j]
     c = int2binary(c_int, binary_dim)
     
     # where we'll store our best guesss (binary encoded)
@@ -111,15 +124,18 @@ rnn <- function(binary_dim, alpha, input_dim, hidden_dim, output_dim, iterations
     synapse_h_update = synapse_h_update * 0
     
     # print out progress
-    if(j %% 500 ==0) {
-      print(paste("Error:", overallError))
-      print(paste("Pred:", paste(d, collapse = " ")))
-      print(paste("True:", paste(c, collapse = " ")))
+    if(!silent && j %% 500 ==0) {
+      print(paste('Iteration:', j))
+      print(paste('Error:', overallError))
+      print(paste('X1:', paste(a, collapse = ' '), ' ', '(', a_int, ')'))
+      print(paste('X2:', paste(b, collapse = ' '), '+', '(', b_int, ')'))
+      print('-----------------------------')
+      print(paste('Y: ', paste(c, collapse = ' '), ' ', '(', c_int, ')'))
       out = 0
       for (x in 1:length(d)) {
         out[x] = rev(d)[x]*2^(x-1) }
-      print(paste(a_int, "+", b_int, "=", sum(out)))
-      print("----------------")                     
+      print(paste('Y^:',   paste(d, collapse = ' '), ' ', '(', sum(out), ')'))
+      print('=============================')
     }             
   }
 }

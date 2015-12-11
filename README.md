@@ -9,6 +9,12 @@ Implementation of a Recurrent Neural Network in R.
 
 Installation
 ------------
+The **stable** version can be installed from [CRAN](http://cran.r-project.org/package=rnn) using:
+
+```r
+install.packages('rnn')
+```
+
 The **development** version, to be used **at your peril**, can be installed from [GitHub](http://github.com/bquast/rnn) using the `devtools` package.
 
 ```r
@@ -31,6 +37,12 @@ For general information on using the package, please refer to the help files.
 ```r
 help('rnn')
 help(package='rnn')
+```
+
+There is also a long form [vignette](https://cran.r-project.org/web/packages/rnn/vignettes/RNN.html) available using:
+
+```r
+vignette('RNN')
 ```
 
 
