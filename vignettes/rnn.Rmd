@@ -1,6 +1,6 @@
 ---
 title: "Recurrent Neural Network"
-author: "Vignette Author"
+author: "Bastiaan Quast"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -20,48 +20,36 @@ library(rnn)
 
 # Code
 
-We can view the code of the main `rnn()` function by calling it without the parathesis.
+We can view the code of the main `rnn()` function by calling it without the parathesis (not printed here).
 
-```{r code-rnn}
-rnn
+```{r code-rnn, eval=FALSE}
+trainr
 ```
 
-As can be seen from the above, the model relies on three other functions that are included with the package.
+As can be seen from the above, the model relies on two other functions that are available trough the `sigmoid` package.
 
-The first one is `int2binary`, which stands for **integer to binary**, and converts an integer number to its binary representation:
-
-```{r int2binary}
-int2binary(146, length=8)
-```
-
-The code for this function is:
-
-```{r int2binary-code}
-int2binary
-```
-
-The second function is `sigmoid()`, which converts an integer to its sigmoid value.
+The first function is `logistic()`, which converts an integer to its sigmoid value.
 
 ```{r sigmoid}
-(a <- sigmoid(3))
+(a <- sigmoid::logistic(3))
 ```
 
 The code for the `sigmoid()` function is:
 
 ```{r sigmoid-code}
-sigmoid
+sigmoid::logistic
 ```
 
-The final function converts the sigmoid value of a number to its derivative.
+The second function converts the sigmoid value of a number to its derivative.
 
 ```{r sigmoid-der}
-sigmoid_output_to_derivative(a) # a was created above using sigmoid()
+sigmoid::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
 ```
 
 Finally, we can inspect this code using:
 
 ```{r sigmoid-der-code}
-sigmoid_output_to_derivative
+sigmoid::sigmoid_output_to_derivative
 ```
 
 # Application
@@ -69,13 +57,13 @@ sigmoid_output_to_derivative
 By setting a **seed** for the random number generator, we ensure replicability.
 
 ```{r seed}
-set.seed(123)
+set.seed(1)
 ```
 
 An example is included in the help file.
 
 ```{r help, eval=FALSE}
-help('rnn')
+help('trainr')
 ```
 
 First we generate the data:
@@ -87,37 +75,63 @@ X2 = sample(0:127, 5000, replace=TRUE)
 
 # create sample output
 Y <- X1 + X2
+
+# convert to binary
+X1 <- int2bin(X1)
+X2 <- int2bin(X2)
+Y  <- int2bin(Y)
+
+# Create 3d array: dim 1: samples; dim 2: time; dim 3: variables.
+X <- array( c(X1,X2), dim=c(dim(X1),2) )
+Y <- array( Y, dim=c(dim(Y),1) ) 
 ```
 
 This example is:
 
 ```{r example}
-rnn(Y,
-    X1,
-    X2,
-    binary_dim =  8,
-    alpha      =  0.1,
-    input_dim  =  2,
-    hidden_dim = 10,
-    output_dim =  1)
+# train the model
+model <- trainr(Y=Y,
+                X=X,
+                learningrate   =  0.1,
+                hidden_dim     = 10,
+                start_from_end = TRUE )
 ```
 
-It is interesting to vary the number of hidden units and iterations.
+See the evolution of the error over different epochs:
 
-```{r example-2}
-# create sample inputs
-X1 = sample(0:127, 20000, replace=TRUE)
-X2 = sample(0:127, 20000, replace=TRUE)
+```{r error}
+plot(colMeans(model$error),type='l',
+     xlab='epoch',
+     ylab='errors'                  )
+```
 
-# create sample output
-Y <- X1 + X2
+Now create testing data
 
-rnn(Y,
-    X1,
-    X2,
-    binary_dim = 8,
-    alpha      = 0.1,
-    input_dim  = 2,
-    hidden_dim = 3,
-    output_dim = 1)
+```{r test-data}
+# create test inputs
+A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
+A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
+
+# create 3d array: dim 1: samples; dim 2: time; dim 3: variables
+A <- array( c(A1,A2), dim=c(dim(A1),2) )
+```
+
+Predict based on testing data.
+
+```{r predictr}
+# predict
+B  <- predictr(model,
+               A     )
+```
+
+Test prediction against true values
+
+```{r test}
+# convert back to integers
+A1 <- bin2int(A1)
+A2 <- bin2int(A2)
+B  <- bin2int(B)
+
+# plot the difference
+hist( B-(A1+A2) )
 ```

@@ -3,50 +3,16 @@
 \name{rnn}
 \alias{rnn}
 \title{Recurrent Neural Network}
-\usage{
-rnn(Y, X1, X2, binary_dim, alpha, input_dim, hidden_dim, output_dim,
-  silent = FALSE)
-}
-\arguments{
-\item{Y}{vector of output values}
-
-\item{X1}{vector of input values}
-
-\item{X2}{vector of input values}
-
-\item{binary_dim}{dimension of binary representation}
-
-\item{alpha}{size of alpha}
-
-\item{input_dim}{dimension of input layer, i.e. how many numbers to sum}
-
-\item{hidden_dim}{dimension of hidden layer}
-
-\item{output_dim}{dimension of output layer}
-
-\item{silent}{should train progress be printed}
-}
 \description{
-Trains a Recurrent Neural Network.
+A Recurrent Neural Network in native R, transforms numbers to binaries before adding bit by bit, teaching itself how to carry.
 }
-\examples{
-# create training inputs
-X1 = sample(0:127, 7000, replace=TRUE)
-X2 = sample(0:127, 7000, replace=TRUE)
-
-# create training output
-Y <- X1 + X2
-
-# run the 
-rnn(Y,
-    X1,
-    X2,
-    binary_dim =  8,
-    alpha      =  0.1,
-    input_dim  =  2,
-    hidden_dim = 10,
-    output_dim =  1,
-    silent = FALSE)
-    
+\author{
+Bastiaan Quast \email{bquast@gmail.com}
+}
+\references{
+{http://qua.st/rnn}
+}
+\seealso{
+\code{\link{trainr}} for training a model and \code{\link{predictr}} for using a model to make predictions. http://qua.st/rnn
 }
 

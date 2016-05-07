@@ -1,32 +1,26 @@
 ## ----package-------------------------------------------------------------
 library(rnn)
 
-## ----code-rnn------------------------------------------------------------
-rnn
-
-## ----int2binary----------------------------------------------------------
-int2binary(146, length=8)
-
-## ----int2binary-code-----------------------------------------------------
-int2binary
+## ----code-rnn, eval=FALSE------------------------------------------------
+#  trainr
 
 ## ----sigmoid-------------------------------------------------------------
-(a <- sigmoid(3))
+(a <- sigmoid::logistic(3))
 
 ## ----sigmoid-code--------------------------------------------------------
-sigmoid
+sigmoid::logistic
 
 ## ----sigmoid-der---------------------------------------------------------
-sigmoid_output_to_derivative(a) # a was created above using sigmoid()
+sigmoid::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
 
 ## ----sigmoid-der-code----------------------------------------------------
-sigmoid_output_to_derivative
+sigmoid::sigmoid_output_to_derivative
 
 ## ----seed----------------------------------------------------------------
-set.seed(123)
+set.seed(1)
 
 ## ----help, eval=FALSE----------------------------------------------------
-#  help('rnn')
+#  help('trainr')
 
 ## ----data----------------------------------------------------------------
 # create sample inputs
@@ -36,30 +30,47 @@ X2 = sample(0:127, 5000, replace=TRUE)
 # create sample output
 Y <- X1 + X2
 
+# convert to binary
+X1 <- int2bin(X1)
+X2 <- int2bin(X2)
+Y  <- int2bin(Y)
+
+# Create 3d array: dim 1: samples; dim 2: time; dim 3: variables.
+X <- array( c(X1,X2), dim=c(dim(X1),2) )
+Y <- array( Y, dim=c(dim(Y),1) ) 
+
 ## ----example-------------------------------------------------------------
-rnn(Y,
-    X1,
-    X2,
-    binary_dim =  8,
-    alpha      =  0.1,
-    input_dim  =  2,
-    hidden_dim = 10,
-    output_dim =  1)
+# train the model
+model <- trainr(Y=Y,
+                X=X,
+                learningrate   =  0.1,
+                hidden_dim     = 10,
+                start_from_end = TRUE )
 
-## ----example-2-----------------------------------------------------------
-# create sample inputs
-X1 = sample(0:127, 20000, replace=TRUE)
-X2 = sample(0:127, 20000, replace=TRUE)
+## ----error---------------------------------------------------------------
+plot(colMeans(model$error),type='l',
+     xlab='epoch',
+     ylab='errors'                  )
 
-# create sample output
-Y <- X1 + X2
+## ----test-data-----------------------------------------------------------
+# create test inputs
+A1 = int2bin( sample(0:127, 7000, replace=TRUE) )
+A2 = int2bin( sample(0:127, 7000, replace=TRUE) )
 
-rnn(Y,
-    X1,
-    X2,
-    binary_dim = 8,
-    alpha      = 0.1,
-    input_dim  = 2,
-    hidden_dim = 3,
-    output_dim = 1)
+# create 3d array: dim 1: samples; dim 2: time; dim 3: variables
+A <- array( c(A1,A2), dim=c(dim(A1),2) )
+
+## ----predictr------------------------------------------------------------
+# predict
+B  <- predictr(model,
+               A     )
+
+## ----test----------------------------------------------------------------
+# convert back to integers
+A1 <- bin2int(A1)
+A2 <- bin2int(A2)
+B  <- bin2int(B)
+
+# plot the difference
+hist( B-(A1+A2) )
 
