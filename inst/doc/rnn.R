@@ -41,11 +41,12 @@ Y <- array( Y, dim=c(dim(Y),1) )
 
 ## ----example-------------------------------------------------------------
 # train the model
-model <- trainr(Y=Y,
-                X=X,
+model <- trainr(Y=Y[,dim(Y)[2]:1,,drop=F], # we inverse the time dimension
+                X=X[,dim(X)[2]:1,,drop=F], # we inverse the time dimension
                 learningrate   =  0.1,
                 hidden_dim     = 10,
-                start_from_end = TRUE )
+                batch_size = 100,
+                numepochs = 10)
 
 ## ----error---------------------------------------------------------------
 plot(colMeans(model$error),type='l',
@@ -63,7 +64,9 @@ A <- array( c(A1,A2), dim=c(dim(A1),2) )
 ## ----predictr------------------------------------------------------------
 # predict
 B  <- predictr(model,
-               A     )
+               A[,dim(A)[2]:1,,drop=F]
+               )
+B = B[,dim(B)[2]:1]
 
 ## ----test----------------------------------------------------------------
 # convert back to integers

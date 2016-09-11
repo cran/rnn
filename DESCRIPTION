@@ -1,18 +1,22 @@
 Package: rnn
 Title: Recurrent Neural Network
-Version: 0.5.0
-Authors@R: person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("aut", "cre"))
+Version: 0.8.0
+Authors@R: c(person("Bastiaan", "Quast", email = "bquast@gmail.com", role = c("aut", "cre")),
+             person("Dimitri", "Fichou", email = "dimitrifichou@gmail.com", role = "aut"))
 Description: Implementation of a Recurrent Neural Network in R.
 Depends: R (>= 3.2.2)
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
-Imports: sigmoid
+URL: http://qua.st/rnn, https://github.com/bquast/rnn
+BugReports: https://github.com/bquast/rnn/issues
+Imports: sigmoid, shiny
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2016-05-06 12:51:59 UTC; quast
-Author: Bastiaan Quast [aut, cre]
+Packaged: 2016-09-11 13:16:32 UTC; bquast
+Author: Bastiaan Quast [aut, cre],
+  Dimitri Fichou [aut]
 Maintainer: Bastiaan Quast <bquast@gmail.com>
 Repository: CRAN
-Date/Publication: 2016-05-07 01:11:27
+Date/Publication: 2016-09-11 16:24:24
