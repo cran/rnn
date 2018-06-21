@@ -22,6 +22,15 @@ set.seed(1)
 ## ----help, eval=FALSE----------------------------------------------------
 #  help('trainr')
 
+## ----int2bin-------------------------------------------------------------
+# basic conversion
+i2b <- function(integer, length=8)
+  as.numeric(intToBits(integer))[1:length]
+
+# apply to entire vectors
+int2bin <- function(integer, length=8)
+  t(sapply(integer, i2b, length=length))
+
 ## ----data----------------------------------------------------------------
 # create sample inputs
 X1 = sample(0:127, 5000, replace=TRUE)
@@ -67,6 +76,15 @@ B  <- predictr(model,
                A[,dim(A)[2]:1,,drop=F]
                )
 B = B[,dim(B)[2]:1]
+
+## ----bin2int-------------------------------------------------------------
+b2i <- function(binary)
+  packBits(as.raw(c(binary, rep(0, 32-length(binary) ))), 'integer')
+
+bin2int <- function(binary){
+  binary <- round(binary)
+  length <- dim(binary)[2]    # determine length of binary representation
+  apply(binary, 1, b2i)     } # apply to full matrix
 
 ## ----test----------------------------------------------------------------
 # convert back to integers
