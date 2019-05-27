@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dimitri Fichou" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2019-05-27" />
 
 <title>RNN units</title>
 
@@ -205,6 +205,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -213,8 +216,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">RNN units</h1>
-<h4 class="author"><em>Dimitri Fichou</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="author">Dimitri Fichou</h4>
+<h4 class="date">2019-05-27</h4>
 
 
 
@@ -229,13 +232,13 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>To perform the BPTT with a RNN unit, we have the eror comming from the top layer (<span class="math inline">\(\delta 1\)</span>), the future hidden state (<span class="math inline">\(\delta 2\)</span>). Also, we have stored during the feed forward the states at each step of the feeding. In the case of the future layer, this error is just set to zero if not calculated yet. For convention, <span class="math inline">\(\cdot\)</span> correspond to point wise multiplication, while <span class="math inline">\(*\)</span> correspond to matrix multiplication.</p>
 <p>The rules on how to back prpagate come from <a href="http://practicalcryptography.com/miscellaneous/machine-learning/graphically-determining-backpropagation-equations/">this post</a>.</p>
 <p><span class="math display">\[\delta 3 = \delta 1 + \delta 2 \]</span></p>
-<p><span class="math display">\[\delta 4 =  \delta 3 \cdot sigmoid'(h_t) \]</span></p>
+<p><span class="math display">\[\delta 4 =  \delta 3 \cdot sigmoid&#39;(h_t) \]</span></p>
 <p><span class="math display">\[\delta 5 = \delta 4 * W^T \]</span> <span class="math display">\[\delta 6 = \delta 4 * U^T \]</span></p>
 <p>The error <span class="math inline">\(\delta 5\)</span> and <span class="math inline">\(\delta 6\)</span> are used for the next layers. Once all those errors are available, it is possible to calculate the weight update.</p>
 <p><span class="math display">\[\delta W = \delta W + h_{t-1}^T * \delta 4 \]</span></p>
 <p><span class="math display">\[\delta U = \delta U + x_{t}^T * \delta 5 \]</span></p>
 <p>This should be according to the linked post but in reality, we did it as follow:</p>
-<p><span class="math display">\[\delta 5 = \delta 6 = ((\delta 2 * W^T) + (\delta 1 * U^T)) * sigmoid'(h_t) \]</span></p>
+<p><span class="math display">\[\delta 5 = \delta 6 = ((\delta 2 * W^T) + (\delta 1 * U^T)) * sigmoid&#39;(h_t) \]</span></p>
 <p><span class="math display">\[\delta U = \delta U + x_{t}^T * \delta 1 \]</span></p>
 <p><span class="math display">\[\delta W = \delta W + h_{t-1}^T * \delta 2 \]</span></p>
 </div>

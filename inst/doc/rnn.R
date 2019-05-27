@@ -16,9 +16,6 @@ sigmoid::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
 ## ----sigmoid-der-code----------------------------------------------------
 sigmoid::sigmoid_output_to_derivative
 
-## ----seed----------------------------------------------------------------
-set.seed(1)
-
 ## ----help, eval=FALSE----------------------------------------------------
 #  help('trainr')
 

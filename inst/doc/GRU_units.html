@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dimitri Fichou" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2019-05-27" />
 
 <title>GRU units</title>
 
@@ -205,6 +205,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -213,8 +216,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">GRU units</h1>
-<h4 class="author"><em>Dimitri Fichou</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="author">Dimitri Fichou</h4>
+<h4 class="date">2019-05-27</h4>
 
 
 
@@ -238,11 +241,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p><span class="math display">\[\delta 7 = \delta 3 \cdot g_t \]</span></p>
 <p><span class="math display">\[\delta 8 = \delta 3 \cdot z_t  \]</span></p>
 <p><span class="math display">\[\delta 9 = \delta 7 + \delta 8 \]</span></p>
-<p><span class="math display">\[\delta 10 = \delta 8 \cdot tanh'(g_t)  \]</span></p>
-<p><span class="math display">\[\delta 11 = \delta 9 \cdot sigmoid'(z_t)  \]</span></p>
+<p><span class="math display">\[\delta 10 = \delta 8 \cdot tanh&#39;(g_t)  \]</span></p>
+<p><span class="math display">\[\delta 11 = \delta 9 \cdot sigmoid&#39;(z_t)  \]</span></p>
 <p><span class="math display">\[\delta 12 = \delta 10 * W_g^T \]</span> <span class="math display">\[\delta 13 = \delta 10 * U_g^T \]</span> <span class="math display">\[\delta 14 = \delta 11 * W_z^T \]</span> <span class="math display">\[\delta 15 = \delta 11 * U_z^T \]</span></p>
 <p><span class="math display">\[\delta 16 = \delta 13 \cdot h_{t-1} \]</span> <span class="math display">\[\delta 17 = \delta 13 \cdot r_t  \]</span></p>
-<p><span class="math display">\[\delta 18 = \delta 17 \cdot sigmoid'(r_t)  \]</span></p>
+<p><span class="math display">\[\delta 18 = \delta 17 \cdot sigmoid&#39;(r_t)  \]</span></p>
 <p><span class="math display">\[\delta 19 = \delta 17 + \delta 4 \]</span></p>
 <p><span class="math display">\[\delta 20 = \delta 18 * W_r^T \]</span> <span class="math display">\[\delta 21 = \delta 18 * U_r^T \]</span></p>
 <p><span class="math display">\[\delta 22 = \delta 21 + \delta 15 \]</span></p>

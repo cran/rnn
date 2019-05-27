@@ -3,7 +3,6 @@ library(rnn)
 
 ## ----data----------------------------------------------------------------
 # synthetic time serie prediction
-set.seed(1)
 sample_dim <- 9
 time_dim <- 200
 X <- data.frame()

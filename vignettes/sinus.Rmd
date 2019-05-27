@@ -4,7 +4,7 @@ author: "Dimitri Fichou"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{sinus}
+  %\VignetteIndexEntry{Sinus and Cosinus}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,7 +21,6 @@ Generate data.
 
 ```{r data}
 # synthetic time serie prediction
-set.seed(1)
 sample_dim <- 9
 time_dim <- 200
 X <- data.frame()

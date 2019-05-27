@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dimitri Fichou" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2019-05-27" />
 
 <title>LSTM units</title>
 
@@ -205,6 +205,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -213,8 +216,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">LSTM units</h1>
-<h4 class="author"><em>Dimitri Fichou</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="author">Dimitri Fichou</h4>
+<h4 class="date">2019-05-27</h4>
 
 
 
@@ -236,13 +239,13 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p><span class="math display">\[\delta 3 = \delta 1 + \delta 2 \]</span></p>
 <p><span class="math display">\[\delta 5 = \delta 3 \cdot 6 = \delta 3 \cdot o_t \]</span></p>
 <p><span class="math display">\[\delta 6 = \delta 3 \cdot 5 = \delta 3 \cdot tanh(c_t) \]</span></p>
-<p><span class="math display">\[\delta 7 = \delta 5 \cdot f'(5) = \delta 5 \cdot tanh'(tanh(c_t)) \]</span></p>
+<p><span class="math display">\[\delta 7 = \delta 5 \cdot f&#39;(5) = \delta 5 \cdot tanh&#39;(tanh(c_t)) \]</span></p>
 <p><span class="math display">\[\delta 8 = \delta 7 \cdot \delta 4  \]</span></p>
 <p><span class="math display">\[\delta 9 = \delta 8 \cdot 10 = \delta 8 \cdot i_t  \]</span></p>
 <p><span class="math display">\[\delta 10 = \delta 8 \cdot 9 = \delta 8 \cdot g_t  \]</span></p>
 <p><span class="math display">\[\delta 11 = \delta 8 \cdot 12 = \delta 8 \cdot f_t  \]</span></p>
 <p><span class="math display">\[\delta 12 = \delta 8 \cdot 11 = \delta 8 \cdot c_{t-1}  \]</span></p>
-<p><span class="math display">\[\delta 13 = \delta 6 \cdot f'(6) = \delta 6 \cdot sigmoid'(o_t) \]</span> <span class="math display">\[\delta 14 = \delta 9 \cdot f'(9) = \delta 9 \cdot tanh'(g_t) \]</span> <span class="math display">\[\delta 15 = \delta 10 \cdot f'(10) = \delta 10 \cdot sigmoid'(i_t) \]</span> <span class="math display">\[\delta 16 = \delta 12 \cdot f'(12) = \delta 12 \cdot sigmoid'(f_t) \]</span></p>
+<p><span class="math display">\[\delta 13 = \delta 6 \cdot f&#39;(6) = \delta 6 \cdot sigmoid&#39;(o_t) \]</span> <span class="math display">\[\delta 14 = \delta 9 \cdot f&#39;(9) = \delta 9 \cdot tanh&#39;(g_t) \]</span> <span class="math display">\[\delta 15 = \delta 10 \cdot f&#39;(10) = \delta 10 \cdot sigmoid&#39;(i_t) \]</span> <span class="math display">\[\delta 16 = \delta 12 \cdot f&#39;(12) = \delta 12 \cdot sigmoid&#39;(f_t) \]</span></p>
 <p><span class="math display">\[\delta 17 = \delta 13 * U_o^T \]</span> <span class="math display">\[\delta 19 = \delta 14 * U_g^T \]</span> <span class="math display">\[\delta 21 = \delta 15 * U_i^T \]</span> <span class="math display">\[\delta 23 = \delta 16 * W_f^T \]</span> <span class="math display">\[\delta 18 = \delta 13 * W_o^T \]</span> <span class="math display">\[\delta 20 = \delta 14 * W_g^T \]</span> <span class="math display">\[\delta 22 = \delta 16 * W_i^T \]</span> <span class="math display">\[\delta 24 = \delta 16 * W_f^T \]</span></p>
 <p><span class="math display">\[\delta 25 = \delta 18 + \delta 20 + \delta 22 + \delta 24 \]</span> <span class="math display">\[\delta 26 = \delta 17 + \delta 19 + \delta 21 + \delta 23 \]</span></p>
 <p>The error <span class="math inline">\(\delta 11\)</span>, <span class="math inline">\(\delta 25\)</span> and <span class="math inline">\(\delta 26\)</span> are used for the next layers. Once all those errors are available, it is possible to calculate the weight update.</p>
