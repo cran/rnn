@@ -1,4 +1,4 @@
-## ----feedforward_plot,echo=F,fig.height=4,fig.width=7--------------------
+## ----feedforward_plot,echo=F,fig.height=4,fig.width=7-------------------------
 par(mar=rep(0,4))
 plot(c(0,10),c(0,10),type="n",
      # bty ="n",
@@ -52,7 +52,7 @@ arrows(x0=c(9.25),y0=c(1.5),y1=c(9.5),length = 0.1) # after X
 
 text(x=c(1.75,3.25,4.75,6.25),y=5.5,labels=c(expression('f'[t]),expression('i'[t]),expression('g'[t]),expression('o'[t])),pos = 4)
 
-## ----BPTT plot,fig.height=5,fig.width=7,echo=F---------------------------
+## ----BPTT plot,fig.height=5,fig.width=7,echo=F--------------------------------
 par(mar=rep(0,4))
 plot(c(0,10),c(0,10),type="n",
      # bty ="n",

@@ -1,7 +1,7 @@
-## ----package-------------------------------------------------------------
+## ----package------------------------------------------------------------------
 library(rnn)
 
-## ----data----------------------------------------------------------------
+## ----data---------------------------------------------------------------------
 # synthetic time serie prediction
 sample_dim <- 9
 time_dim <- 200
@@ -25,11 +25,11 @@ Y <- as.matrix(Y)
 X <- (X-min(X))/(max(X)-min(X))
 Y <- (Y-min(Y))/(max(Y)-min(Y))
 
-## ----train, message=FALSE------------------------------------------------
+## ----train, message=FALSE-----------------------------------------------------
 # Train with all but the 2 lasts sample
 model <- trainr(Y = Y[seq(sample_dim-2),],X = X[seq(sample_dim-2),],learningrate = 0.05,hidden_dim = c(16),numepochs=500,batch_size = 1,momentum = 0,learningrate_decay = 1)
 
-## ----plot,fig.height=9,fig.width=7---------------------------------------
+## ----plot,fig.height=9,fig.width=7--------------------------------------------
 # Plot and predict all samples
 layout(cbind(seq(sample_dim-2),c((sample_dim-1):sample_dim,rep(sample_dim+1,sample_dim-4))))
 par(mar=c(1.5,2,1,1),xaxt="s",yaxt="s",mgp=c(1.5,0.5,0),oma=c(0,0,4,0))

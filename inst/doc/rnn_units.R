@@ -1,4 +1,4 @@
-## ----feedforward_plot,echo=F,fig.height=4,fig.width=7--------------------
+## ----feedforward_plot,echo=F,fig.height=4,fig.width=7-------------------------
 par(mar=rep(0,4))
 plot(c(0,10),c(0,10),type="n",
      # bty ="n",
@@ -55,7 +55,7 @@ segments(x0=c(4.75),y0=rep(5.25,1),y1=c(8))# after linearisation
 arrows(x0=c(9.25),y0=c(8),y1=c(9.5),length = 0.1) # after X
 # 
 
-## ----BPTT plot,fig.height=5,fig.width=7,echo=F---------------------------
+## ----BPTT plot,fig.height=5,fig.width=7,echo=F--------------------------------
 par(mar=rep(0,4))
 plot(c(0,10),c(0,10),type="n",
      # bty ="n",

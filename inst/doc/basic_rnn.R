@@ -1,4 +1,4 @@
-## ----int2bin-------------------------------------------------------------
+## ----int2bin------------------------------------------------------------------
 # basic conversion
 i2b <- function(integer, length=8)
   as.numeric(intToBits(integer))[1:length]
@@ -7,7 +7,7 @@ i2b <- function(integer, length=8)
 int2bin <- function(integer, length=8)
   t(sapply(integer, i2b, length=length))
 
-## ----data----------------------------------------------------------------
+## ----data---------------------------------------------------------------------
 # set training data length
 training_data_size = 20000
 
@@ -26,7 +26,7 @@ Y  <- int2bin(Y)
 # create 3d array: dim 1: samples; dim 2: time; dim 3: variables
 X <- array( c(X1,X2), dim=c(dim(X1),2) )
 
-## ----sigmoid-------------------------------------------------------------
+## ----sigmoid------------------------------------------------------------------
 sigmoid <- function(x)
              1 / ( 1+exp(-x) )
 
@@ -34,14 +34,14 @@ sigmoid <- function(x)
 sig_to_der <- function(x)
                 x*(1-x)
 
-## ----hyperparameters-----------------------------------------------------
+## ----hyperparameters----------------------------------------------------------
 binary_dim = 8
 alpha      = 0.5
 input_dim  = 2
 hidden_dim = 6
 output_dim = 1
 
-## ----weights-init--------------------------------------------------------
+## ----weights-init-------------------------------------------------------------
 
 # initialize weights randomly between -1 and 1, with mean 0
 weights_0 = matrix(runif(n = input_dim *hidden_dim, min=-1, max=1),
@@ -59,7 +59,7 @@ weights_0_update = matrix(0, nrow = input_dim,  ncol = hidden_dim)
 weights_h_update = matrix(0, nrow = hidden_dim, ncol = hidden_dim)
 weights_1_update = matrix(0, nrow = hidden_dim, ncol = output_dim)
 
-## ----training------------------------------------------------------------
+## ----training-----------------------------------------------------------------
 
 # training logic
 for (j in 1:training_data_size) {
