@@ -1,12 +1,12 @@
 rnn
 ===
 
-[![License](http://img.shields.io/badge/license-GPLv3-brightgreen.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-[![CRAN Version](http://www.r-pkg.org/badges/version/rnn)](https://cran.r-project.org/package=rnn)
+[![License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![CRAN Version](https://www.r-pkg.org/badges/version/rnn)](https://cran.r-project.org/package=rnn)
 [![R build status](https://github.com/bquast/rnn/workflows/R-CMD-check/badge.svg)](https://github.com/bquast/rnn/actions?workflow=R-CMD-check)
-[![Coverage Status](https://img.shields.io/codecov/c/github/bquast/rnn/master.svg)](https://codecov.io/bquast/rnn/rnn?branch=master)
-[![Total RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/grand-total/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
-[![RStudio Cloud Downloads](http://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
+[![Coverage status](https://codecov.io/gh/bquast/rnn/branch/master/graph/badge.svg?token=bsdqgGdJNu)](https://app.codecov.io/gh/bquast/rnn)
+[![Total RStudio Cloud Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
+[![RStudio Cloud Downloads](https://cranlogs.r-pkg.org/badges/rnn?color=brightgreen)](https://cran.r-project.org/package=rnn)
 
 Implementation of a Recurrent Neural Network in R.
 
@@ -23,7 +23,7 @@ The **stable** version can be installed from [CRAN](https://cran.r-project.org/p
 install.packages('rnn')
 ```
 
-The **development** version, to be used **at your peril**, can be installed from [GitHub](http://github.com/bquast/rnn) using the `remotes` package.
+The **development** version, to be used **at your peril**, can be installed from [GitHub](https://github.com/bquast/rnn) using the `remotes` package.
 
 ```r
 if (!require('remotes')) install.packages('remotes')
@@ -65,14 +65,14 @@ news(package='rnn')
 
 There is a dedicated website with information hosted on my [personal website](https://qua.st/).
 
-https://qua.st/rnn
+https://qua.st/rnn/
 
 
 Development
 -------------
 Development takes place on the GitHub page.
 
-http://github.com/rnn/
+https://github.com/bquast/rnn/
 
 Bugs can be filed on the issues page on GitHub.
 
