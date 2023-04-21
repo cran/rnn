@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bastiaan Quast" />
 
-<meta name="date" content="2022-07-12" />
+<meta name="date" content="2023-04-21" />
 
 <title>Basic Recurrent Neural Network</title>
 
@@ -31,23 +31,23 @@ document.addEventListener('DOMContentLoaded', function(e) {
 </script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -65,55 +65,54 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -122,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -334,150 +340,150 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Basic Recurrent Neural Network</h1>
 <h4 class="author">Bastiaan Quast</h4>
-<h4 class="date">2022-07-12</h4>
+<h4 class="date">2023-04-21</h4>
 
 
 
 <p>Below is a basic function that converts integers to binary format
 (read left to right)</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># basic conversion</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>i2b <span class="ot">&lt;-</span> <span class="cf">function</span>(integer, <span class="at">length=</span><span class="dv">8</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">intToBits</span>(integer))[<span class="dv">1</span><span class="sc">:</span>length]</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># apply to entire vectors</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>int2bin <span class="ot">&lt;-</span> <span class="cf">function</span>(integer, <span class="at">length=</span><span class="dv">8</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(<span class="fu">sapply</span>(integer, i2b, <span class="at">length=</span>length))</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># basic conversion</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>i2b <span class="ot">&lt;-</span> <span class="cf">function</span>(integer, <span class="at">length=</span><span class="dv">8</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">as.numeric</span>(<span class="fu">intToBits</span>(integer))[<span class="dv">1</span><span class="sc">:</span>length]</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># apply to entire vectors</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>int2bin <span class="ot">&lt;-</span> <span class="cf">function</span>(integer, <span class="at">length=</span><span class="dv">8</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">t</span>(<span class="fu">sapply</span>(integer, i2b, <span class="at">length=</span>length))</span></code></pre></div>
 <p>First we generate the data:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set training data length</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>training_data_size <span class="ot">=</span> <span class="dv">20000</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create sample inputs</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">127</span>, training_data_size, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">127</span>, training_data_size, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># create sample output</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> X1 <span class="sc">+</span> X2</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to binary</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">int2bin</span>(X1)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">int2bin</span>(X2)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>Y  <span class="ot">&lt;-</span> <span class="fu">int2bin</span>(Y)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create 3d array: dim 1: samples; dim 2: time; dim 3: variables</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">array</span>( <span class="fu">c</span>(X1,X2), <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">dim</span>(X1),<span class="dv">2</span>) )</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># set training data length</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>training_data_size <span class="ot">=</span> <span class="dv">20000</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># create sample inputs</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>X1 <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">127</span>, training_data_size, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>X2 <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">127</span>, training_data_size, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co"># create sample output</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>Y <span class="ot">&lt;-</span> X1 <span class="sc">+</span> X2</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># convert to binary</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">int2bin</span>(X1)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> <span class="fu">int2bin</span>(X2)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>Y  <span class="ot">&lt;-</span> <span class="fu">int2bin</span>(Y)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># create 3d array: dim 1: samples; dim 2: time; dim 3: variables</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">array</span>( <span class="fu">c</span>(X1,X2), <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">dim</span>(X1),<span class="dv">2</span>) )</span></code></pre></div>
 <p>Define the sigmoid and derivative functions</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sigmoid <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>             <span class="dv">1</span> <span class="sc">/</span> ( <span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>x) )</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sig_to_der <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sigmoid <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>             <span class="dv">1</span> <span class="sc">/</span> ( <span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>x) )</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>sig_to_der <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>                x<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>x)</span></code></pre></div>
 <p>This example is:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>binary_dim <span class="ot">=</span> <span class="dv">8</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>alpha      <span class="ot">=</span> <span class="fl">0.5</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>input_dim  <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>hidden_dim <span class="ot">=</span> <span class="dv">6</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>output_dim <span class="ot">=</span> <span class="dv">1</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize weights randomly between -1 and 1, with mean 0</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>weights_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="at">n =</span> input_dim <span class="sc">*</span>hidden_dim, <span class="at">min=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">1</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nrow=</span>input_dim,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol=</span>hidden_dim ) </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>weights_h <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="at">n =</span> hidden_dim<span class="sc">*</span>hidden_dim, <span class="at">min=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">1</span>),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nrow=</span>hidden_dim,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol=</span>hidden_dim )</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>weights_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="at">n =</span> hidden_dim<span class="sc">*</span>output_dim, <span class="at">min=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">1</span>),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nrow=</span>hidden_dim,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ncol=</span>output_dim ) </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># create matrices to store updates, to be used in backpropagation</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>weights_0_update <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> input_dim,  <span class="at">ncol =</span> hidden_dim) </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>weights_h_update <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> hidden_dim, <span class="at">ncol =</span> hidden_dim)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>weights_1_update <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> hidden_dim, <span class="at">ncol =</span> output_dim)</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># training logic</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>training_data_size) {</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select data</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    a <span class="ot">=</span> X1[j,]</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    b <span class="ot">=</span> X2[j,]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># select true answer</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">=</span> Y[j,]</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># where we&#39;ll store our best guesss (binary encoded)</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    d <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> binary_dim)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    overallError <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    layer_2_deltas <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    layer_1_values <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol =</span> hidden_dim)</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># moving along the positions in the binary encoding</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (position <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>binary_dim) {</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># generate input and output</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        X <span class="ot">=</span> <span class="fu">cbind</span>( a[position], b[position] ) <span class="co"># rename X to layer_0?</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        y <span class="ot">=</span> c[position]</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># hidden layer</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        layer_1 <span class="ot">=</span> <span class="fu">sigmoid</span>( (X<span class="sc">%*%</span>weights_0) <span class="sc">+</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>                    (layer_1_values[<span class="fu">dim</span>(layer_1_values)[<span class="dv">1</span>],] <span class="sc">%*%</span> weights_h) )</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># output layer</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        layer_2 <span class="ot">=</span> <span class="fu">sigmoid</span>(layer_1 <span class="sc">%*%</span> weights_1)</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># did we miss?... if so, by how much?</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        layer_2_error <span class="ot">=</span> y <span class="sc">-</span> layer_2</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        layer_2_deltas <span class="ot">=</span> <span class="fu">rbind</span>(layer_2_deltas, layer_2_error <span class="sc">*</span> <span class="fu">sig_to_der</span>(layer_2))</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        overallError <span class="ot">=</span> overallError <span class="sc">+</span> <span class="fu">abs</span>(layer_2_error)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># decode estimate so we can print it out</span></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        d[position] <span class="ot">=</span> <span class="fu">round</span>(layer_2)</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># store hidden layer</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>        layer_1_values <span class="ot">=</span> <span class="fu">rbind</span>(layer_1_values, layer_1)</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    future_layer_1_delta <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> hidden_dim)</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (position <span class="cf">in</span> binary_dim<span class="sc">:</span><span class="dv">1</span>) {</span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>        X <span class="ot">=</span> <span class="fu">cbind</span>(a[position], b[position])</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>        layer_1 <span class="ot">=</span> layer_1_values[<span class="fu">dim</span>(layer_1_values)[<span class="dv">1</span>]<span class="sc">-</span>(binary_dim<span class="sc">-</span>position),]</span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>        prev_layer_1 <span class="ot">=</span> layer_1_values[<span class="fu">dim</span>(layer_1_values)[<span class="dv">1</span>]<span class="sc">-</span> ( (binary_dim<span class="sc">-</span>position)<span class="sc">+</span><span class="dv">1</span> ),]</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>        <span class="co"># error at output layer</span></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        layer_2_delta <span class="ot">=</span> layer_2_deltas[<span class="fu">dim</span>(layer_2_deltas)[<span class="dv">1</span>]<span class="sc">-</span>(binary_dim<span class="sc">-</span>position),]</span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        <span class="co"># error at hidden layer</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>        layer_1_delta <span class="ot">=</span> (future_layer_1_delta <span class="sc">%*%</span> <span class="fu">t</span>(weights_h) <span class="sc">+</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>          layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(weights_1)) <span class="sc">*</span> <span class="fu">sig_to_der</span>(layer_1)</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>        <span class="co"># let&#39;s update all our weights so we can try again</span></span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>        weights_1_update <span class="ot">=</span> weights_1_update <span class="sc">+</span> <span class="fu">matrix</span>(layer_1) <span class="sc">%*%</span> layer_2_delta</span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>        weights_h_update <span class="ot">=</span> weights_h_update <span class="sc">+</span> <span class="fu">matrix</span>(prev_layer_1) <span class="sc">%*%</span> layer_1_delta</span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>        weights_0_update <span class="ot">=</span> weights_0_update <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> layer_1_delta</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>        future_layer_1_delta <span class="ot">=</span> layer_1_delta</span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>    weights_0 <span class="ot">=</span> weights_0 <span class="sc">+</span> ( weights_0_update <span class="sc">*</span> alpha )</span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    weights_1 <span class="ot">=</span> weights_1 <span class="sc">+</span> ( weights_1_update <span class="sc">*</span> alpha )</span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    weights_h <span class="ot">=</span> weights_h <span class="sc">+</span> ( weights_h_update <span class="sc">*</span> alpha )</span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    weights_0_update <span class="ot">=</span> weights_0_update <span class="sc">*</span> <span class="dv">0</span></span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>    weights_1_update <span class="ot">=</span> weights_1_update <span class="sc">*</span> <span class="dv">0</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    weights_h_update <span class="ot">=</span> weights_h_update <span class="sc">*</span> <span class="dv">0</span></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(j<span class="sc">%%</span>(training_data_size<span class="sc">/</span><span class="dv">10</span>) <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Error:&quot;</span>, overallError))    </span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>## [1] &quot;Error: 2.18291493644676&quot;
-## [1] &quot;Error: 0.178499782196946&quot;
-## [1] &quot;Error: 0.116320487679996&quot;
-## [1] &quot;Error: 0.174290835574415&quot;
-## [1] &quot;Error: 0.198828057558919&quot;
-## [1] &quot;Error: 0.083769322080405&quot;
-## [1] &quot;Error: 0.13625691557453&quot;
-## [1] &quot;Error: 0.0660248641004516&quot;
-## [1] &quot;Error: 0.147126292653413&quot;
-## [1] &quot;Error: 0.0483486390229478&quot;</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>binary_dim <span class="ot">=</span> <span class="dv">8</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>alpha      <span class="ot">=</span> <span class="fl">0.5</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>input_dim  <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>hidden_dim <span class="ot">=</span> <span class="dv">6</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>output_dim <span class="ot">=</span> <span class="dv">1</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># initialize weights randomly between -1 and 1, with mean 0</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>weights_0 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="at">n =</span> input_dim <span class="sc">*</span>hidden_dim, <span class="at">min=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">1</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                   <span class="at">nrow=</span>input_dim,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                   <span class="at">ncol=</span>hidden_dim ) </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>weights_h <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="at">n =</span> hidden_dim<span class="sc">*</span>hidden_dim, <span class="at">min=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">1</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                   <span class="at">nrow=</span>hidden_dim,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>                   <span class="at">ncol=</span>hidden_dim )</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>weights_1 <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="at">n =</span> hidden_dim<span class="sc">*</span>output_dim, <span class="at">min=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">1</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>                   <span class="at">nrow=</span>hidden_dim,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>                   <span class="at">ncol=</span>output_dim ) </span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co"># create matrices to store updates, to be used in backpropagation</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>weights_0_update <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> input_dim,  <span class="at">ncol =</span> hidden_dim) </span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>weights_h_update <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> hidden_dim, <span class="at">ncol =</span> hidden_dim)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>weights_1_update <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> hidden_dim, <span class="at">ncol =</span> output_dim)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># training logic</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>training_data_size) {</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="co"># select data</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    a <span class="ot">=</span> X1[j,]</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    b <span class="ot">=</span> X2[j,]</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    </span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="co"># select true answer</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    c <span class="ot">=</span> Y[j,]</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    </span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    <span class="co"># where we&#39;ll store our best guesss (binary encoded)</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    d <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> binary_dim)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    </span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    overallError <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    </span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    layer_2_deltas <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>    layer_1_values <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow=</span><span class="dv">1</span>, <span class="at">ncol =</span> hidden_dim)</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>    <span class="co"># moving along the positions in the binary encoding</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>    <span class="cf">for</span> (position <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>binary_dim) {</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>        <span class="co"># generate input and output</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>        X <span class="ot">=</span> <span class="fu">cbind</span>( a[position], b[position] ) <span class="co"># rename X to layer_0?</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>        y <span class="ot">=</span> c[position]</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>        <span class="co"># hidden layer</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>        layer_1 <span class="ot">=</span> <span class="fu">sigmoid</span>( (X<span class="sc">%*%</span>weights_0) <span class="sc">+</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>                    (layer_1_values[<span class="fu">dim</span>(layer_1_values)[<span class="dv">1</span>],] <span class="sc">%*%</span> weights_h) )</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    </span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>        <span class="co"># output layer</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>        layer_2 <span class="ot">=</span> <span class="fu">sigmoid</span>(layer_1 <span class="sc">%*%</span> weights_1)</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>    </span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>        <span class="co"># did we miss?... if so, by how much?</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>        layer_2_error <span class="ot">=</span> y <span class="sc">-</span> layer_2</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>        layer_2_deltas <span class="ot">=</span> <span class="fu">rbind</span>(layer_2_deltas, layer_2_error <span class="sc">*</span> <span class="fu">sig_to_der</span>(layer_2))</span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>        overallError <span class="ot">=</span> overallError <span class="sc">+</span> <span class="fu">abs</span>(layer_2_error)</span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>    </span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>        <span class="co"># decode estimate so we can print it out</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>        d[position] <span class="ot">=</span> <span class="fu">round</span>(layer_2)</span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>        </span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>        <span class="co"># store hidden layer</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>        layer_1_values <span class="ot">=</span> <span class="fu">rbind</span>(layer_1_values, layer_1)</span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>    }</span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a>    future_layer_1_delta <span class="ot">=</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> hidden_dim)</span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a>    </span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a>    <span class="cf">for</span> (position <span class="cf">in</span> binary_dim<span class="sc">:</span><span class="dv">1</span>) {</span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>        X <span class="ot">=</span> <span class="fu">cbind</span>(a[position], b[position])</span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>        layer_1 <span class="ot">=</span> layer_1_values[<span class="fu">dim</span>(layer_1_values)[<span class="dv">1</span>]<span class="sc">-</span>(binary_dim<span class="sc">-</span>position),]</span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>        prev_layer_1 <span class="ot">=</span> layer_1_values[<span class="fu">dim</span>(layer_1_values)[<span class="dv">1</span>]<span class="sc">-</span> ( (binary_dim<span class="sc">-</span>position)<span class="sc">+</span><span class="dv">1</span> ),]</span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a>        </span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a>        <span class="co"># error at output layer</span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a>        layer_2_delta <span class="ot">=</span> layer_2_deltas[<span class="fu">dim</span>(layer_2_deltas)[<span class="dv">1</span>]<span class="sc">-</span>(binary_dim<span class="sc">-</span>position),]</span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a>        <span class="co"># error at hidden layer</span></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a>        layer_1_delta <span class="ot">=</span> (future_layer_1_delta <span class="sc">%*%</span> <span class="fu">t</span>(weights_h) <span class="sc">+</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a>          layer_2_delta <span class="sc">%*%</span> <span class="fu">t</span>(weights_1)) <span class="sc">*</span> <span class="fu">sig_to_der</span>(layer_1)</span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>    </span>
+<span id="cb6-56"><a href="#cb6-56" tabindex="-1"></a>        <span class="co"># let&#39;s update all our weights so we can try again</span></span>
+<span id="cb6-57"><a href="#cb6-57" tabindex="-1"></a>        weights_1_update <span class="ot">=</span> weights_1_update <span class="sc">+</span> <span class="fu">matrix</span>(layer_1) <span class="sc">%*%</span> layer_2_delta</span>
+<span id="cb6-58"><a href="#cb6-58" tabindex="-1"></a>        weights_h_update <span class="ot">=</span> weights_h_update <span class="sc">+</span> <span class="fu">matrix</span>(prev_layer_1) <span class="sc">%*%</span> layer_1_delta</span>
+<span id="cb6-59"><a href="#cb6-59" tabindex="-1"></a>        weights_0_update <span class="ot">=</span> weights_0_update <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> layer_1_delta</span>
+<span id="cb6-60"><a href="#cb6-60" tabindex="-1"></a>    </span>
+<span id="cb6-61"><a href="#cb6-61" tabindex="-1"></a>        future_layer_1_delta <span class="ot">=</span> layer_1_delta</span>
+<span id="cb6-62"><a href="#cb6-62" tabindex="-1"></a>    }</span>
+<span id="cb6-63"><a href="#cb6-63" tabindex="-1"></a>    </span>
+<span id="cb6-64"><a href="#cb6-64" tabindex="-1"></a>    weights_0 <span class="ot">=</span> weights_0 <span class="sc">+</span> ( weights_0_update <span class="sc">*</span> alpha )</span>
+<span id="cb6-65"><a href="#cb6-65" tabindex="-1"></a>    weights_1 <span class="ot">=</span> weights_1 <span class="sc">+</span> ( weights_1_update <span class="sc">*</span> alpha )</span>
+<span id="cb6-66"><a href="#cb6-66" tabindex="-1"></a>    weights_h <span class="ot">=</span> weights_h <span class="sc">+</span> ( weights_h_update <span class="sc">*</span> alpha )</span>
+<span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a>    </span>
+<span id="cb6-68"><a href="#cb6-68" tabindex="-1"></a>    weights_0_update <span class="ot">=</span> weights_0_update <span class="sc">*</span> <span class="dv">0</span></span>
+<span id="cb6-69"><a href="#cb6-69" tabindex="-1"></a>    weights_1_update <span class="ot">=</span> weights_1_update <span class="sc">*</span> <span class="dv">0</span></span>
+<span id="cb6-70"><a href="#cb6-70" tabindex="-1"></a>    weights_h_update <span class="ot">=</span> weights_h_update <span class="sc">*</span> <span class="dv">0</span></span>
+<span id="cb6-71"><a href="#cb6-71" tabindex="-1"></a>    </span>
+<span id="cb6-72"><a href="#cb6-72" tabindex="-1"></a>    <span class="cf">if</span>(j<span class="sc">%%</span>(training_data_size<span class="sc">/</span><span class="dv">10</span>) <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb6-73"><a href="#cb6-73" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Error:&quot;</span>, overallError))    </span>
+<span id="cb6-74"><a href="#cb6-74" tabindex="-1"></a></span>
+<span id="cb6-75"><a href="#cb6-75" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [1] &quot;Error: 3.21669796723965&quot;
+## [1] &quot;Error: 0.361915435877941&quot;
+## [1] &quot;Error: 0.219138161162173&quot;
+## [1] &quot;Error: 0.226513933100235&quot;
+## [1] &quot;Error: 0.147211872855127&quot;
+## [1] &quot;Error: 0.0586696195278096&quot;
+## [1] &quot;Error: 0.114599066272314&quot;
+## [1] &quot;Error: 0.143059439146038&quot;
+## [1] &quot;Error: 0.137939269560401&quot;
+## [1] &quot;Error: 0.109633663809083&quot;</code></pre>
 
 
 
