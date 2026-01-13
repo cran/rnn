@@ -2,7 +2,7 @@
 library(rnn)
 
 ## ----code-rnn, eval=FALSE-----------------------------------------------------
-#  trainr
+# trainr
 
 ## ----sigmoid------------------------------------------------------------------
 (a <- sigmoid::logistic(3))
@@ -17,7 +17,7 @@ sigmoid::sigmoid_output_to_derivative(a) # a was created above using sigmoid()
 sigmoid::sigmoid_output_to_derivative
 
 ## ----help, eval=FALSE---------------------------------------------------------
-#  help('trainr')
+# help('trainr')
 
 ## ----int2bin------------------------------------------------------------------
 # basic conversion

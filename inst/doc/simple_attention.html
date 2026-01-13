@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -340,10 +341,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p>This vignette describes how to implement the <a href="https://en.m.wikipedia.org/wiki/Attention_(machine_learning)">attention
-mechanism</a> - which forms the basis of <a href="https://en.m.wikipedia.org/wiki/Transformer_(machine_learning_model)">transformers</a>
-- in the <a href="https://en.m.wikipedia.org/wiki/R_(programming_language)">R
-language</a>.</p>
+<p>This vignette describes how to implement the attention mechanism -
+which forms the basis of transformers - in the R language.</p>
 <p>We begin by generating encoder representations of four different
 words.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># encoder representations of four different words</span></span>
@@ -375,8 +374,7 @@ a matrix) which we call <code>words</code>.</p>
 <p>Next, we generate the Queries (<code>Q</code>), Keys
 (<code>K</code>), and Values (<code>V</code>). The <code>%*%</code>
 operator performs the matrix multiplication. You can view the R help
-page using <code>help(&#39;%*%&#39;)</code> (or the online <a href="https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Multiplication">An
-Introduction to R</a>).</p>
+page using <code>help(&#39;%*%&#39;)</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># generating the queries, keys and values</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>Q <span class="ot">=</span> words <span class="sc">%*%</span> W_Q</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>K <span class="ot">=</span> words <span class="sc">%*%</span> W_K</span>
@@ -396,11 +394,11 @@ using <code>t()</code>, see <code>help(&#39;t&#39;)</code> for more info).</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>weights <span class="ot">=</span> attention<span class="sc">::</span><span class="fu">ComputeWeights</span>(scores)</span></code></pre></div>
 <p>Let’s have a look at the <code>weights</code> matrix.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">print</span>(weights)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;            [,1]       [,2]     [,3]       [,4]</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; [1,] -0.2986355 -2.6877197 4.479533 -1.4931776</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; [2,] -3.1208558 -0.6241712 4.369198 -0.6241712</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; [3,] -1.7790165 -1.7790165 4.690134 -1.1321014</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; [4,]  1.2167336 -3.6502008 3.650201 -1.2167336</span></span></code></pre></div>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;            [,1]       [,2]      [,3]       [,4]</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; [1,] 0.10679806 0.03928881 0.7891368 0.06477630</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; [2,] 0.03770440 0.10249120 0.7573132 0.10249120</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; [3,] 0.00657627 0.00657627 0.9760050 0.01084244</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; [4,] 0.27600434 0.10153632 0.4550542 0.16740510</span></span></code></pre></div>
 <p>Finally, we compute the <code>attention</code> as a weighted sum of
 the value vectors (which are combined in the matrix <code>V</code>).</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># computing the attention by a weighted sum of the value vectors</span></span>
@@ -408,10 +406,10 @@ the value vectors (which are combined in the matrix <code>V</code>).</p>
 <p>Now we can view the results using:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">print</span>(attention)</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt;          [,1]     [,2]       [,3]</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; [1,] 7.167252 6.868617 -1.4931776</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; [2,] 4.993369 1.872514 -0.6241712</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; [3,] 6.469151 4.690134 -1.1321014</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; [4,] 7.300402 8.517135 -1.2167336</span></span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; [1,] 2.749848 1.856646 0.06477630</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; [2,] 2.654822 1.692526 0.10249120</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; [3,] 2.969429 1.976005 0.01084244</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; [4,] 2.353518 1.629522 0.16740510</span></span></code></pre></div>
 
 
 
